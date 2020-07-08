@@ -48,6 +48,7 @@ class Products extends Component {
       console.log("Error in loading Products", error);
     }
     if (data) {
+      //data
       return data.value.map((product) => {
         return <Product key={product.ID} product={product}></Product>;
       });
