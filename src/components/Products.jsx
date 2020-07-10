@@ -10,10 +10,10 @@ class Products extends Component {
   }
   state = {
     productsCount: 11,
-    top: 5,
+    top: 10,
     skip: 0,
     activePage: 1,
-    productsPerPage: 5,
+    productsPerPage: 10,
   };
   render() {
     const { top, skip } = this.state;
@@ -27,7 +27,6 @@ class Products extends Component {
 
     // https://services.odata.org/V2/Northwind/Northwind.svc/Products?$format=json
     // const baseUrl = "http://services.odata.org/V4/TripPinService/People";
-    // const query = { filter: { FirstName: "Russell" } };
 
     const countUrl =
       "https://services.odata.org/Experimental/OData/(S(l3vkrglmrsqth3tkd51sxm0q))/OData.svc/Products/$count";
@@ -35,16 +34,15 @@ class Products extends Component {
       //const query = { filter: { FirstName: 'Russell' } };
       <React.Fragment>
         <div className="">
-          <div>
-            <OData baseUrl={countUrl}>
-              {({ loading, error, data }) =>
-                this.displayCount(loading, error, data)
-              }
-            </OData>
-          </div>
+          <OData baseUrl={countUrl}>
+            {({ loading, error, data }) =>
+              this.displayCount(loading, error, data)
+            }
+          </OData>
         </div>
+
         <div className="table-responsive table-wrapper-scroll-y my-custom-scrollbar tableFixHead">
-          <table className="table">
+          <table className="table table-sm">
             <thead className="thead-dark ">
               <tr>
                 <th scope="col">ID</th>
@@ -64,13 +62,13 @@ class Products extends Component {
               </OData>
             </tbody>
           </table>
-          <Pagination
-            productsCount={this.state.productsCount}
-            productsPerPage={this.state.productsPerPage}
-            activePage={this.state.activePage}
-            onPageChange={this.onPageChange}
-          />
         </div>
+        <Pagination
+          productsCount={this.state.productsCount}
+          productsPerPage={this.state.productsPerPage}
+          activePage={this.state.activePage}
+          onPageChange={this.onPageChange}
+        />
       </React.Fragment>
     );
   }
@@ -97,12 +95,16 @@ class Products extends Component {
       debugger;
       this.count = parseInt(new TextDecoder("utf-8").decode(data));
       // this.setState({productsCount:count});
-      const text = "Products(" + this.count + ")";
-      return <span>{text}</span>;
+      const text = "Products (" + this.count + ")";
+      return <h3>{text}</h3>;
     }
   };
   onProductCallBack = (loading, error, data) => {
     console.log("products call back :");
+
+    if (loading) {
+      return <span>Loading</span>;
+    }
 
     if (error) {
       console.log("Error in loading Products", error);
