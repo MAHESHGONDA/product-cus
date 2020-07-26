@@ -14,7 +14,7 @@ const Pagination = (props) => {
           console.log(page);
           return (
             <li
-              className={page == activePage ? "page-item active" : "page-item"}
+              className={page === activePage ? "page-item active" : "page-item"}
             >
               <a
                 role="button"

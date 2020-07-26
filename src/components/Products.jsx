@@ -2,6 +2,8 @@ import React, { Component } from "react";
 import OData from "react-odata";
 import Product from "./Product";
 import Pagination from "./Pagination";
+import { List } from "fundamental-react";
+import { Table } from "fundamental-react";
 
 class Products extends Component {
   constructor(props) {
@@ -33,7 +35,7 @@ class Products extends Component {
     return (
       //const query = { filter: { FirstName: 'Russell' } };
       <React.Fragment>
-        <div className="">
+        <div className="mt-3">
           <OData baseUrl={countUrl}>
             {({ loading, error, data }) =>
               this.displayCount(loading, error, data)
@@ -42,27 +44,39 @@ class Products extends Component {
         </div>
 
         <div className="table-responsive table-wrapper-scroll-y my-custom-scrollbar tableFixHead">
-          <table className="table table-sm">
-            <thead className="thead-dark ">
-              <tr>
-                <th scope="col">ID</th>
-                <th scope="col">Name</th>
-                <th scope="col">Description</th>
-                <th scope="col">Price</th>
-              </tr>
-            </thead>
-            <tbody>
-              <OData baseUrl={baseUrl}>
-                {
-                  ({ loading, error, data }) =>
-                    this.onProductCallBack(loading, error, data)
+          {
+            <table className="table table-sm">
+              <thead className="thead-dark ">
+                <tr>
+                  <th scope="col">ID</th>
+                  <th scope="col">Name</th>
+                  <th scope="col">Description</th>
+                  <th scope="col">Price</th>
+                </tr>
+              </thead>
+              <tbody>
+                <OData baseUrl={baseUrl}>
+                  {
+                    ({ loading, error, data }) =>
+                      this.onProductCallBack(loading, error, data)
 
-                  //
-                }
-              </OData>
-            </tbody>
-          </table>
+                    //
+                  }
+                </OData>
+              </tbody>
+            </table>
+          }
         </div>
+
+        {/* <OData baseUrl={baseUrl}>
+          {
+            ({ loading, error, data }) =>
+              this.onProductListCallBack(loading, error, data)
+
+            //
+          }
+        </OData> */}
+
         <Pagination
           productsCount={this.state.productsCount}
           productsPerPage={this.state.productsPerPage}
@@ -86,17 +100,14 @@ class Products extends Component {
       activePage: pageNo,
     });
   };
-  componentDidMount() {
-    debugger;
-  }
+  componentDidMount() {}
   displayCount = (loading, error, data) => {
     //
     if (data) {
-      debugger;
       this.count = parseInt(new TextDecoder("utf-8").decode(data));
       // this.setState({productsCount:count});
       const text = "Products (" + this.count + ")";
-      return <h3>{text}</h3>;
+      return <h6>{text}</h6>;
     }
   };
   onProductCallBack = (loading, error, data) => {
@@ -116,6 +127,63 @@ class Products extends Component {
       return data.value.map((product) => {
         return <Product key={product.ID} product={product}></Product>;
       });
+    }
+  };
+
+  onProductListCallBack = (loading, error, data) => {
+    console.log("products call back :");
+
+    if (loading) {
+      return <span>Loading</span>;
+    }
+
+    if (error) {
+      console.log("Error in loading Products", error);
+    }
+    if (data) {
+      if (data.value.length > this.state.productsPerPage) {
+        data.value.pop();
+      }
+
+      const defaultHeaders = [
+        "Column Header 1",
+        "Column Header 2",
+        "Column Header 3",
+        "Column Header 4",
+      ];
+      const defaultData = [
+        {
+          rowData: ["Data 1", "Data 2", "Data 3", "Data 4"],
+        },
+        {
+          rowData: ["Data 5", "Data 6", "Data 7", "Data 8"],
+        },
+      ];
+
+      debugger;
+      var rowArray = data.value.map((product) => {
+        const propertyNames = Object.values(product);
+        return { rowData: propertyNames };
+      });
+      return <Table headers={defaultHeaders} tableData={rowArray} />;
+      // return data.value.map((product) => {
+      //   return (
+      //     <List.Item>
+      //       <List.Text>{product.Name}</List.Text>
+      //       <List.Byline twoColumns>
+      //         <List.Text left>{product.Description}</List.Text>
+      //         <List.Text right>{product.Description}</List.Text>
+      //       </List.Byline>
+      //     </List.Item>
+      //     // <List.Item>
+      //     //   <List.Text>{product.Name}</List.Text>
+      //     //   <List.Byline twoColumns>
+      //     //     <List.Text left>{product.Description}</List.Text>
+      //     //     <List.Text right>{product.Price}</List.Text>
+      //     //   </List.Byline>
+      //     // </List.Item>
+      //   );
+      // });
     }
   };
 }
