@@ -91,9 +91,7 @@ class Products extends Component {
     // this.setState({ activePage: pageNo });
     const top = this.state.productsPerPage * pageNo;
     let skip = top - this.state.productsPerPage;
-    // if (skip < 0) {
-    //   skip = 0;
-    // }
+
     this.setState({
       top: top,
       skip: skip,
